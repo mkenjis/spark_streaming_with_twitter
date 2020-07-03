@@ -38,24 +38,17 @@ val tweets = twitterStream.filter(tweet => tweet.getLang.equals("en") || tweet.g
 
 tweets.repartition(1).saveAsTextFiles("hdfs://spkm:9000/twitter/tweets","json")
 
-// tweets.foreachRDD( rdd =>
-//  rdd.foreachPartition ( iter =>
-//    iter.foreach(println)
-//  )
-// )
+tweets.foreachRDD( rdd => {
+  val topList = rdd.take(10)
+  topList.foreach(println)
+  })
 
 sc.setCheckpointDir("/home/hadoop/checkpoint")
 //ssc.checkpoint("hdfs://localhost:9000/user/hduser/checkpoint")
 
 ssc.start()
 
---------------------------------------
-
-tweets.foreachRDD( rdd => {
-  val topList = rdd.take(10)
-  topList.foreach(println)
-  })
-  
+-------------------------------------
 
 tweets.foreachRDD(rdd => {
   val topList = rdd.take(10)
